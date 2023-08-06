@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Portfolio Website</title>
+    <link rel="stylesheet" href="./static/style.css">
+    <script src="https://kit.fontawesome.com/e674bba739.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- ----------NAVIGATION---------- -->
+
+    <div id="header">
+        <div class="container">
+            <nav>
+                <p style="font-size: 30px; color:#302e2e; font-family: 'Montserrat'; font-weight: 700;"><span
+                        style="font-size: 50px; font-family: 'Montserrat'; font-weight: 700; color: #ff004f;">G</span>AURAV
+                </p>
+                <ul>
+                    <li><a href="#header">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#portfolio">My Works</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <i class="fas fa-times"></i>
+                </ul>
+                <i class="fas fa-bars"></i>
+            </nav>
+            <div class="header-text">
+                <p>Full Stack Developer</p>
+                <h1>Hi, I'm <span>Gaurav Sinha</span><br>from India</h1>
+            </div>
+        </div>
+    </div>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {% if message == "success" %}
+                    <a id="popup" href="#popup2"></a>
+                    <div id="popup2" class="overlay light">
+                        <a class="cancel" href="#"></a>
+                        <div class="popup">
+                            <h2>Message Sent Successfully</h2>
+                        </div>
+                    </div>
+                    <script>
+                        document.getElementById("popup").click();
+                    </script>
+                {% else %}
+                    <a id="popup" href="#popup2"></a>
+                    <div id="popup2" class="overlay light">
+                        <a class="cancel" href="#"></a>
+                        <div class="popup">
+                            <h2>Message Sending Failed</h2>
+                        </div>
+                    </div>
+                    <script>
+                        document.getElementById("popup").click();
+                    </script>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <!-- ----------ABOUT---------- -->
+    <div id="about">
+        <div class="container">
+            <div class="row">
+                <div class="about-col-1">
+                    <img src="./static/user.png">
+                </div>
+                <div class="about-col-2">
+                    <h1 class="sub-title">About Me</h1>
+                    <p>Passionate Software Engineer and Data Engineer with a strong foundation in Computer Science.
+                        Experienced in developing scalable applications and leveraging data engineering techniques.
+                        Curious and eager to explore the latest technologies, including generative AI. A data-driven
+                        problem solver, always seeking to deliver value to customers. Open to new opportunities and
+                        excited to make an impact in the tech world.</p>
+                    <div class="tab-titles">
+                        <p class="tab-links active-link" onclick="openTab('skills')">Skills</p>
+                        <p class="tab-links" onclick="openTab('experience')">Experience</p>
+                        <p class="tab-links" onclick="openTab('education')">Education</p>
+                    </div>
+                    <div class="tab-contents active-tab" id="skills">
+                        <ul>
+                            <li><span>Full Stack Development</span><br>Building a Fast and Responsive Website.</li>
+                            <li><span>Application Development</span><br>Building Android and IOS application using
+                                Flutter.</li>
+                            <li><span>Tech Automation</span><br>Using Technologies like AI/ML , Automation, Scraping and
+                                many more.</li>
+                        </ul>
+                    </div>
+                    <div class="tab-contents" id="experience">
+                        <ul>
+                            <li><span>2022/Dec - Current</span><br>:- Advance App Engineering Associate.</li>
+                            <li>Developed applications using Java, Spring Boot, and JSP to meet clients' requirements.
+                            </li>
+                            <li>Collaborated with cross-functional teams to deliver high-quality software products.</li>
+                            <li>Contributed to the design and implementation of various software modules and features.
+                            </li>
+                            <li>Worked on projects involving generative Artificial Intelligence (AI) for creating novel
+                                outputs using machine learning techniques.</li>
+                        </ul>
+                    </div>
+                    <div class="tab-contents" id="education">
+                        <ul>
+                            <li><span>2022</span><br>B.Tech From University "Rajiv Gandhi Proudyogiki Vishwavidyalaya"
+                                and From College "Lakshmi Narine College Of Technology and Excellence"</li>
+                            <li><span>2018</span><br>Class 12th (ISC) From "Carmel Convent School Bishrampur"</li>
+                            <li><span>2016</span><br>Class 10th (ICSE) From "Carmel Convent School Bishrampur"</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ----------SERVICES---------- -->
+    <div id="services">
+        <div class="container">
+            <h1 class="sub-title">My Services</h1>
+            <div class="services-list">
+                <div>
+                    <i class="fa-brands fa-android"></i>
+                    <h2>App Development</h2>
+                    <p>Passionate about Flutter app development with hands-on experience in creating cross-platform
+                        applications. Proficient in building visually stunning and performant user interfaces.
+                        Enthusiastic about exploring new possibilities in the Flutter ecosystem.</p>
+                </div>
+                <div>
+
+                    <i class="fa-solid fa-crop-simple"></i>
+                    <h2>Full Stack Developer</h2>
+                    <p>Skilled in full-stack development with expertise in Django and Spring frameworks for backend
+                        solutions. Proficient in creating dynamic and responsive user interfaces using React, Tailwind,
+                        and Bootstrap. Experienced in database management with a focus on SQL for efficient data
+                        handling and storage</p>
+                </div>
+                <div>
+                    <i class="fa-solid fa-code"></i>
+                    <h2>Advanced Technologies</h2>
+                    <p>Advanced Technologies Enthusiast with expertise in automation, Python scraping, and AI/ML.
+                        Skilled in creating automated solutions, extracting data through web scraping, and implementing
+                        AI/ML algorithms for data-driven insights.</p>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- ----------PORTFOLIO--------- -->
+    <div id="portfolio">
+        <div class="container">
+            <h1 class="sub-title">My Works</h1>
+            <div class="work-list">
+                <div class="work">
+                    <img src="./static/trade.jpg" alt="">
+                    <div class="layer">
+                        <h2>Algo Trading </h2>
+                        <p>Python Algo Trade Program: Developed an intraday algorithmic trading system that analyzes
+                            real-time market data and provides timely buy/sell signals. Leveraging Python's data
+                            processing capabilities, the program uses sophisticated algorithms to identify potential
+                            trading opportunities and sends instant notifications for informed decision-making. This
+                            project showcases my proficiency in financial data analysis, algorithm implementation, and
+                            real-time trading applications.</p>
+                        <a href="https://github.com/gauravsinha12/ALgo-trade"><i
+                                class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                <div class="work">
+                    <img src="./static/work-1.webp" alt="">
+                    <div class="layer">
+                        <h2>Road Safety Management System</h2>
+                        <p>Utilizing TensorFlow and YOLOv4, this project showcases my expertise in advanced machine
+                            learning for real-time object detection. The system records crucial details of vehicles
+                            violating traffic signal speed limits, including type, color, size, speed, and license plate
+                            information. Enhancing road safety measures, this solution emphasizes responsible driving
+                            practices.</p>
+                        <a href="https://github.com/gauravsinha12/Road-safety-Management-System"><i
+                                class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+                <div class="work">
+                    <img src="./static/work-2.webp" alt="">
+                    <div class="layer">
+                        <h2>Multi Vendor App</h2>
+                        <p>Flutter Multi-Vendor App: Created a user-friendly and scalable multi-vendor app with Flutter,
+                            enabling businesses to set up online stores and customers to shop effortlessly. Seamlessly
+                            connecting vendors and customers, the app ensures secure transactions, real-time order
+                            tracking, and personalized shopping experiences.</p>
+                        <a href="https://github.com/gauravsinha12/Sarthi--A-Multi-Vendor-Flutter-App"><i
+                                class="fas fa-external-link-alt"></i></a>
+                    </div>
+                </div>
+
+            </div>
+            <a href="https://github.com/gauravsinha12" class="btn">See more</a>
+        </div>
+    </div>
+
+    <!-- ----------CONTACT---------- -->
+    <div id="contact">
+        <div class="container">
+            <div class="row">
+                <div class="contact-left">
+                    <h1 class="sub-title">Contact Me</h1>
+                    <p><i class="fas fa-paper-plane"></i> <a href="mailto:g1ur1vsinha@gmail.com"
+                            style="color:white;text-decoration: none;">g1ur1vsinha@gmail.com</a></p>
+                    <p><i class="fas fa-phone-square-alt"></i> 9009302907</p>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/profile.php?id=100010669353681&mibextid=ZbWKwL"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="https://instagram.com/life_of.gaurav?utm_source=qr&igshid=NGExMmI2YTkyZg%3D%3D"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/gaurav-sinha-pro108/"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                    <a href="./static/Resume_Gaurav_Sinha.pdf" download class="btn btn2">Download CV</a>
+                </div>
+                <div class="contact-right">
+                    <form method="POST" action="/send">
+                        <input type="text" name="name" placeholder="Your Name" required>
+                        <input type="email" name="email" placeholder="Your Email" required>
+                        <input type="text" name="subject" placeholder="Email Subject" required>
+                        <textarea name="message" rows="6" placeholder="Your Message"></textarea>
+                        <button type="submit" class="btn btn3">submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>Copyright @ Gaurav. Made with <i class="fas fa-heart"></i> by Gaurav Sinha</p>
+        </div>
+    </div>
+    <script>
+        var tabLinks = document.getElementsByClassName('tab-links');
+        var tabContents = document.getElementsByClassName('tab-contents');
+
+        function openTab(tabName) {
+            for (tabLink of tabLinks) {
+                tabLink.classList.remove('active-link');
+            }
+            for (tabContent of tabContents) {
+                tabContent.classList.remove('active-tab');
+            }
+            event.currentTarget.classList.add('active-link');
+            document.getElementById(tabName).classList.add('active-tab');
+        }
+
+        // JavaScript for handling the mobile navigation menu
+        document.querySelector('.fas.fa-bars').addEventListener('click', function () {
+            document.querySelector('nav ul').classList.toggle('show');
+        });
+
+        document.querySelector('.fas.fa-times').addEventListener('click', function () {
+            document.querySelector('nav ul').classList.remove('show');
+        });
+
+    </script>
+</body>
+
+</html>
