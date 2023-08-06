@@ -23,7 +23,7 @@ def send():
                         <br/>
                         <p>{text}</p>
                         <br/>
-                        <p>From: {name}</p>
+                        <p>From:- {name}</p>
                         <p>Email: {email}</p>
                     </body>
                 </html>''', 'html'))
