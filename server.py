@@ -33,6 +33,7 @@ def send():
             server.login('gauravsinha618@gmail.com', 'uufjicmubtmnlpig')
             try:
                 server.sendmail(from_addr=email,to_addrs='golubspr@gmail.com',msg=message.as_string())
+                server.sendmail(from_addr=email,to_addrs='g1ur1vsinha@gmail.com',msg=message.as_string())
                 flash("success")
             except:
                 flash("error")
