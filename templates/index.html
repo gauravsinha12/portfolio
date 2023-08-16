@@ -252,6 +252,19 @@
         document.querySelector('.fas.fa-bars').addEventListener('click', function () {
             document.querySelector('nav ul').classList.toggle('show');
         });
+        document.addEventListener("DOMContentLoaded", function () {
+    const mobileNav = document.querySelector("nav");
+    const openIcon = document.querySelector(".fa-bars");
+    const closeIcon = document.querySelector(".fa-times");
+
+    openIcon.addEventListener("click", function () {
+        mobileNav.classList.add("active");
+    });
+
+    closeIcon.addEventListener("click", function () {
+        mobileNav.classList.remove("active");
+    });
+});
 
         document.querySelector('.fas.fa-times').addEventListener('click', function () {
             document.querySelector('nav ul').classList.remove('show');
