@@ -303,6 +303,7 @@ width: 100%;
 /* ----------PORTFOLIO---------- */
 #portfolio {
     padding: 50px 0;
+    width:min(100%,950px);
 }
 
 .work-list {
@@ -319,14 +320,16 @@ width: 100%;
 }
 
 .work img {
-    width: 100%;
+/*     width: 100%; */
+    width:min(100%,950px);
     border-radius: 10px;
     display: block;
     transition: transform 0.5s;
 }
 
 .layer {
-    width: 100%;
+/*     width: 100%; */
+    width:min(100%,950px);
     height: 0;
     background: #ff004f;
     border-radius: 10px;
@@ -372,7 +375,7 @@ width: 100%;
 .btn {
     display: block;
     margin: 50px auto;
-    width: fit-content;
+    width: ;
     border: 1px solid #ff004f;
     padding: 14px 50px;
     border-radius: 6px;
