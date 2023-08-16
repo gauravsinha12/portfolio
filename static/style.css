@@ -349,6 +349,8 @@ width: 100%;
 
 .layer h2 {
     margin-bottom: 30px;
+    width:min(100%,950px);
+    height:min(100%,950px);
 }
 
 .layer a {
