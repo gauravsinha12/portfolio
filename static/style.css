@@ -113,7 +113,7 @@ nav ul li a::after {
 }
 
 nav ul li a:hover::after {
-    width: min(100%,950px);
+    width: 100%;
 }
 
 .header-text {
