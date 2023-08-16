@@ -87,7 +87,7 @@ nav {
     width: 140px;
 }
 
-nav ul li {
+/* nav ul li {
     display: inline-block;
     list-style: none;
     margin: 10px 20px;
@@ -114,6 +114,50 @@ nav ul li a::after {
 
 nav ul li a:hover::after {
     width: 100%;
+}
+ */
+/* Responsive mobile menu styles */
+.mobile-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.logo {
+    font-size: 30px;
+    color: #302e2e;
+    font-family: 'Montserrat';
+    font-weight: 700;
+}
+
+.menu {
+    list-style: none;
+    display: none;
+}
+
+.menu li {
+    margin: 10px 0;
+}
+
+.menu li a {
+    text-decoration: none;
+    color: #302e2e;
+    font-family: 'Montserrat';
+    font-weight: 700;
+}
+
+.open-icon,
+.close-icon {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Mobile menu open state */
+.mobile-nav.active .menu {
+    display: block;
 }
 
 .header-text {
