@@ -1,9 +1,7 @@
 import {
-  
   ArrowDownTrayIcon,
   BuildingOffice2Icon,
   CalendarIcon,
-  
   MapIcon,
   SparklesIcon,
 } from '@heroicons/react/24/outline';
@@ -11,13 +9,10 @@ import {
 import GithubIcon from '../components/Icon/GithubIcon';
 import InstagramIcon from '../components/Icon/InstagramIcon';
 import LinkedInIcon from '../components/Icon/LinkedInIcon';
-
 import heroImage from '../images/header-background.webp';
-
 import porfolioImage5 from '../images/portfolio/portfolio-5.jpg';
 import porfolioImage6 from '../images/portfolio/portfolio-6.jpg';
 import porfolioImage7 from '../images/portfolio/portfolio-7.jpg';
-
 import porfolioImage11 from '../images/portfolio/portfolio-11.jpg';
 import profilepic from '../images/profilepic.jpg';
 // import testimonialImage from '../images/testimonial.webp';
