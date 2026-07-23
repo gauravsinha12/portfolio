@@ -27,6 +27,30 @@ function walk(node: AnyNode, fn: (n: AnyNode) => void) {
   node.children?.forEach((child) => walk(child, fn));
 }
 
+// Turn ```mermaid fenced blocks into a <mermaid-diagram chart="..."> element
+// before rehype-pretty-code runs. The diagram source rides as a hast property
+// (the same path Pre's `raw` uses), which serializes to the client Mermaid
+// component reliably — unlike an MDX JSX expression attribute, which
+// next-mdx-remote's RSC compiler drops. Runs first so pretty-code never tries
+// to syntax-highlight "mermaid".
+function rehypeMermaid() {
+  return (tree: AnyNode) => {
+    walk(tree, (node) => {
+      if (node.type !== 'element' || node.tagName !== 'pre') return;
+      const code = node.children?.[0];
+      if (code?.tagName !== 'code') return;
+      const cls = code.properties?.className;
+      const classes = Array.isArray(cls) ? cls : typeof cls === 'string' ? cls.split(' ') : [];
+      if (!classes.includes('language-mermaid')) return;
+      const text = code.children?.[0]?.value;
+      if (typeof text !== 'string') return;
+      node.tagName = 'mermaid-diagram';
+      node.properties = { chart: text };
+      node.children = [];
+    });
+  };
+}
+
 function rehypePreRaw() {
   return (tree: AnyNode) => {
     walk(tree, (node) => {
@@ -95,7 +119,9 @@ function Callout({ children }: { children?: ReactNode }) {
 export const baseMdxComponents = {
   a: MdxLink,
   pre: Pre,
-  Mermaid,
+  // Diagrams are authored as ```mermaid fences and rewritten to this element by
+  // rehypeMermaid; the `chart` hast property arrives as a prop.
+  'mermaid-diagram': Mermaid,
   Fill,
   FillBlock,
   Callout,
@@ -111,6 +137,7 @@ export async function renderMdx(source: string, extraComponents: Record<string, 
       mdxOptions: {
         remarkPlugins: [remarkGfm],
         rehypePlugins: [
+          rehypeMermaid,
           rehypeSlug,
           [rehypeAutolinkHeadings, { behavior: 'wrap', properties: { className: 'heading-anchor' } }],
           rehypePreRaw,

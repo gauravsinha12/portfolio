@@ -19,7 +19,7 @@ I wanted a 7B model that argues a position well — takes a stance, defends it, 
 
 ## Architecture
 
-<Mermaid chart={`
+```mermaid
 flowchart LR
   BASE["Zephyr-7B base weights"] --> Q4["4-bit quantize (NF4)"]
   DS["Custom debate dataset"] --> FMT["Instruction formatting"]
@@ -29,7 +29,7 @@ flowchart LR
   Q4 --> INF["4-bit inference"]
   ADAPT --> INF
   INF --> OUT["Debate responses"]
-`} />
+```
 
 The base weights are quantized to 4-bit and frozen. The debate dataset is formatted into instruction/response pairs. Training updates only the LoRA adapters via PEFT and TRL. At inference, the same 4-bit base runs with the trained adapters applied.
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import { useTheme } from 'next-themes';
 
 /**
@@ -9,15 +9,15 @@ import { useTheme } from 'next-themes';
  * diagrams — not images. Mermaid is dynamically imported, so its bundle only
  * loads on pages that actually contain a diagram.
  */
-export function Mermaid({ chart }: { chart: string }) {
+export function Mermaid({ chart }: { chart?: string }) {
   const { resolvedTheme } = useTheme();
   const [svg, setSvg] = useState<string>('');
   const [error, setError] = useState<string>('');
   const id = useId().replace(/:/g, '');
-  const ref = useRef(chart);
-  ref.current = chart;
+  const source = typeof chart === 'string' ? chart.trim() : '';
 
   useEffect(() => {
+    if (!source) return;
     let active = true;
     (async () => {
       try {
@@ -28,7 +28,7 @@ export function Mermaid({ chart }: { chart: string }) {
           theme: resolvedTheme === 'dark' ? 'dark' : 'neutral',
           fontFamily: 'var(--font-mono), ui-monospace, monospace',
         });
-        const { svg } = await mermaid.render(`mermaid-${id}`, ref.current.trim());
+        const { svg } = await mermaid.render(`mermaid-${id}`, source);
         if (active) setSvg(svg);
       } catch (e) {
         if (active) setError(e instanceof Error ? e.message : 'Failed to render diagram');
@@ -37,7 +37,9 @@ export function Mermaid({ chart }: { chart: string }) {
     return () => {
       active = false;
     };
-  }, [resolvedTheme, id]);
+  }, [resolvedTheme, id, source]);
+
+  if (!source) return null;
 
   if (error) {
     return (

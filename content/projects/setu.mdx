@@ -21,7 +21,7 @@ An onboarding copilot answers new-hire and new-customer questions from a body of
 
 ## Architecture
 
-<Mermaid chart={`
+```mermaid
 flowchart TD
   Q["User query"] --> RET["Retrieve (tenant collection, ChromaDB)"]
   RET --> GR{"Chunks relevant?"}
@@ -32,7 +32,7 @@ flowchart TD
   DEC -->|still poor| WEB["Live web search fallback"]
   WEB --> GEN
   GEN --> EVAL["Eval: context recall + faithfulness"]
-`} />
+```
 
 The pipeline is a directed graph, not a straight line. Retrieval feeds a relevance grader; the grader's verdict decides whether to generate, rewrite and retry, or escalate to web search. Generation is followed by evaluation checks so quality is measured, not assumed.
 

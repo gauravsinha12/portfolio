@@ -21,7 +21,7 @@ Practicing data-structures problems alone is a solved problem; competing on them
 
 ## Architecture
 
-<Mermaid chart={`
+```mermaid
 flowchart LR
   UI["Next.js client"]
   WS["WebSocket gateway"]
@@ -38,7 +38,7 @@ flowchart LR
   ME <--> R
   ME -->|atomic UPDATE| PG
   AUTH --> PG
-`} />
+```
 
 The client holds one WebSocket to the Go server. Authentication is verified on connect; the matchmaker pairs waiting players; the match engine owns the live state of each pairing and coordinates the two connections through channels. Session and match state live in Redis so the app server stays stateless; durable data — accounts and ELO — lives in PostgreSQL.
 
