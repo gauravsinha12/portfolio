@@ -1,0 +1,44 @@
+{
+  "_comment": "Illustrative baseline values that show the shape of the result. Replace with your own measured eval run before citing.",
+  "charts": {
+    "quality": {
+      "title": "Retrieval precision and answer faithfulness",
+      "type": "bar",
+      "unit": "score 0–1",
+      "xKey": "metric",
+      "series": [
+        { "key": "vanilla", "label": "Vanilla RAG" },
+        { "key": "corrective", "label": "Corrective RAG" }
+      ],
+      "data": [
+        { "metric": "Retrieval precision", "vanilla": 0.63, "corrective": 0.82 },
+        { "metric": "Faithfulness", "vanilla": 0.71, "corrective": 0.91 }
+      ],
+      "note": "Higher is better. The grade-and-rewrite loop lifts both signals."
+    },
+    "latency": {
+      "title": "Median latency per query",
+      "type": "bar",
+      "unit": "ms",
+      "xKey": "pipeline",
+      "series": [{ "key": "ms", "label": "Latency" }],
+      "data": [
+        { "pipeline": "Vanilla RAG", "ms": 1180 },
+        { "pipeline": "Corrective RAG", "ms": 3420 }
+      ],
+      "note": "The extra grading, rewriting, and occasional web-search hops roughly triple latency."
+    },
+    "cost": {
+      "title": "Cost per query",
+      "type": "bar",
+      "unit": "USD",
+      "xKey": "pipeline",
+      "series": [{ "key": "usd", "label": "Cost" }],
+      "data": [
+        { "pipeline": "Vanilla RAG", "usd": 0.004 },
+        { "pipeline": "Corrective RAG", "usd": 0.011 }
+      ],
+      "note": "More model calls per query means proportionally higher token cost."
+    }
+  }
+}

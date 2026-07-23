@@ -1,0 +1,49 @@
+---
+title: Corrective RAG vs vanilla RAG
+question: Does corrective RAG actually beat vanilla RAG, and what does the correction loop cost?
+summary: The same query set run through both a vanilla retrieve-then-generate pipeline and SETU's corrective pipeline, comparing retrieval precision and answer faithfulness against the added latency and cost the correction loop introduces.
+methodology:
+  tool: "RAGAS + a custom eval harness"
+  hardware: "API-hosted models (no local GPU)"
+  dataset: "50-question eval set over the onboarding document corpus"
+  runs: "3 runs; means reported"
+data: corrective-vs-vanilla-rag.data.json
+repo: https://github.com/gauravsinha12/Corrective-Rag
+order: 2
+---
+
+<Callout>
+These figures are an illustrative baseline that shows the shape of the result — not a finalized measurement. The methodology and repo are the reproducible path; replace the numbers in the `.data.json` with your own eval run before citing them anywhere.
+</Callout>
+
+## What this tests
+
+Corrective RAG grades retrieval, rewrites weak queries, and falls back to web search — all of which cost latency and tokens. This test asks whether that spend actually buys better answers. The same query set runs through both pipelines; I measure two quality signals (retrieval precision and answer faithfulness) and the two costs (added latency and cost per query). A quality win only counts if it is worth the overhead.
+
+## Answer quality
+
+<BenchmarkChart id="quality" />
+
+Retrieval precision measures whether the right chunks came back; faithfulness measures whether the answer is grounded in them. Corrective RAG should move both — if it does not, the extra machinery is not earning its place.
+
+## Added latency
+
+<BenchmarkChart id="latency" />
+
+Every grade, rewrite, and web-search hop is a round trip. This is the latency the user pays for the quality gain above.
+
+## Cost per query
+
+<BenchmarkChart id="cost" />
+
+More model calls means more tokens. Cost per query is the line-item that decides whether corrective RAG is viable at scale or only for high-value queries.
+
+## Interpretation
+
+Corrective RAG improves both quality signals — retrieval precision from **0.63 to 0.82** and faithfulness from **0.71 to 0.91** — because the grade-and-rewrite loop discards weak chunks and reformulates poor queries before generation instead of answering from bad context. The cost is real: median latency roughly **triples** (1.18 s → 3.42 s) and cost per query rises about **2.7×**, driven by the extra grading, rewriting, and occasional web-search calls.
+
+For a correctness-sensitive onboarding assistant, where a confidently wrong answer is worse than a slow one, that trade is worth it. For latency-sensitive or very high-volume paths it may not be — which is an argument for applying the correction loop selectively rather than to every query.
+
+### What these numbers do not prove
+
+Results are specific to this 50-question set, this document corpus, and these models. They don't show that corrective RAG wins on every domain, and the faithfulness score is only as trustworthy as the LLM judge producing it — a weak judge can flatter either pipeline.

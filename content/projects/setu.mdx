@@ -1,0 +1,67 @@
+---
+title: SETU
+summary: A multi-tenant onboarding copilot built as a self-correcting RAG pipeline — a LangGraph state machine that grades retrieved chunks, rewrites weak queries, and falls back to live web search before it generates an answer.
+lead: A LangGraph state machine grades every retrieved chunk and rewrites the query when retrieval is poor, instead of generating an answer from bad context.
+stack:
+  - Python
+  - LangGraph
+  - ChromaDB
+  - FastAPI
+  - React
+links:
+  github: https://github.com/gauravsinha12/SETU
+  demo: ""
+featured: true
+order: 2
+---
+
+## The problem
+
+An onboarding copilot answers new-hire and new-customer questions from a body of internal docs. Plain RAG fails quietly here: when retrieval returns weakly-related chunks, the model still answers — confidently and wrong. SETU treats retrieval quality as a first-class signal. It grades what it retrieved, rewrites the question when the grade is poor, and only reaches for a live web search as a fallback before generating. It is multi-tenant, so each customer's documents stay isolated.
+
+## Architecture
+
+<Mermaid chart={`
+flowchart TD
+  Q["User query"] --> RET["Retrieve (tenant collection, ChromaDB)"]
+  RET --> GR{"Chunks relevant?"}
+  GR -->|yes| GEN["Generate answer"]
+  GR -->|no| RW["Rewrite query"]
+  RW --> DEC{"Improved?"}
+  DEC -->|retry| RET
+  DEC -->|still poor| WEB["Live web search fallback"]
+  WEB --> GEN
+  GEN --> EVAL["Eval: context recall + faithfulness"]
+`} />
+
+The pipeline is a directed graph, not a straight line. Retrieval feeds a relevance grader; the grader's verdict decides whether to generate, rewrite and retry, or escalate to web search. Generation is followed by evaluation checks so quality is measured, not assumed.
+
+## Engineering decisions
+
+### LangGraph state machine vs a linear LangChain chain
+
+A linear chain runs retrieve → generate every time, with no way to react to bad retrieval. Modeling the pipeline as a LangGraph state machine adds conditional branching — grade, then loop back to rewrite or escalate — which is exactly what "corrective" means here. The cost is real: each extra node (grading, rewriting, web search) is another model call and more latency and tokens per answer.
+
+<Fill>Say what the graph bought over a chain (the conditional correction loop), where it added latency/cost, and any cap I put on rewrite retries to bound worst-case latency.</Fill>
+
+### Chunking strategy
+
+Chunk size and overlap trade retrieval precision against context completeness: small chunks retrieve precisely but fragment ideas; large chunks preserve context but dilute the embedding and pull in noise. Overlap reduces boundary-splitting at the cost of duplication.
+
+<Fill>Give the chunk size and overlap I used, and how I picked them — the document characteristics or the retrieval quality I was tuning against.</Fill>
+
+### Multi-tenant isolation in ChromaDB: collection-per-tenant vs metadata filtering
+
+Two ways to keep tenants apart: a separate ChromaDB collection per tenant, or one shared collection with a tenant-id metadata filter on every query. Collection-per-tenant gives a hard isolation boundary and a small blast radius if something goes wrong, at the cost of more collections to manage. Metadata filtering is simpler operationally but leans on every query being filtered correctly — one missing filter leaks across tenants.
+
+<Fill>State which I chose and the blast-radius reasoning — what the failure mode is under each and why the isolation guarantee I picked was the right one for this data.</Fill>
+
+### The relevance-grading step
+
+The grader decides whether retrieved chunks actually answer the query before the model is allowed to generate. Its inputs, its strictness, and its failure modes (false "relevant" that lets bad context through; false "irrelevant" that triggers needless rewrites and web calls) shape the whole pipeline's behavior.
+
+<Fill>Describe what the grader looks at (query–chunk pair, a rubric, a score threshold), and its failure modes — when it passes bad context or over-triggers correction.</Fill>
+
+## What I'd do differently
+
+<Fill>The retrospective: what I'd change about the graph, the grading, or the eval harness, and what I'd measure first to justify the change.</Fill>

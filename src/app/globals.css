@@ -1,0 +1,176 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------ tokens */
+:root {
+  --background: 255 255 255;
+  --foreground: 24 24 27; /* zinc-900 */
+  --muted: 82 82 91; /* zinc-600 */
+  --muted-2: 113 113 122; /* zinc-500 */
+  --border: 228 228 231; /* zinc-200 */
+  --card: 250 250 250; /* zinc-50 */
+  --accent: 37 99 235; /* blue-600 */
+  --accent-fg: 255 255 255;
+
+  color-scheme: light;
+}
+
+.dark {
+  --background: 9 9 11; /* zinc-950 */
+  --foreground: 244 244 245; /* zinc-100 */
+  --muted: 161 161 170; /* zinc-400 */
+  --muted-2: 113 113 122; /* zinc-500 */
+  --border: 39 39 42; /* zinc-800 */
+  --card: 24 24 27; /* zinc-900 */
+  --accent: 96 165 250; /* blue-400 */
+  --accent-fg: 9 9 11; /* zinc-950 */
+
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: rgb(var(--border));
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: rgb(var(--background));
+    color: rgb(var(--foreground));
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgb(var(--accent) / 0.2);
+  }
+
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-muted {
+    color: rgb(var(--muted));
+  }
+  .text-muted-2 {
+    color: rgb(var(--muted-2));
+  }
+  .bg-card {
+    background-color: rgb(var(--card));
+  }
+  .border-default {
+    border-color: rgb(var(--border));
+  }
+  /* Consistent horizontal gutter across the whole site. */
+  .container-page {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 640px) {
+    .container-page {
+      padding-inline: 2rem;
+    }
+  }
+}
+
+/* -------------------------------------------------- shiki / code blocks */
+/* rehype-pretty-code emits dual-theme CSS variables per token. We switch the
+   whole block between light and dark using the .dark class on <html>. */
+[data-rehype-pretty-code-figure] {
+  margin: 1.5rem 0;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(var(--border));
+  padding: 1rem 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  background-color: rgb(var(--card));
+}
+
+[data-rehype-pretty-code-figure] code {
+  display: grid; /* one row per line, enables line highlighting */
+  font-family: var(--font-mono), ui-monospace, monospace;
+  counter-reset: line;
+}
+
+[data-rehype-pretty-code-figure] code > [data-line] {
+  padding-inline: 1rem;
+  border-left: 2px solid transparent;
+}
+
+/* Optional line numbers when the block is marked with showLineNumbers. */
+code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 1.25rem;
+  text-align: right;
+  color: rgb(var(--muted-2));
+}
+
+[data-line][data-highlighted-line] {
+  background-color: rgb(var(--accent) / 0.08);
+  border-left-color: rgb(var(--accent));
+}
+
+[data-highlighted-chars] {
+  background-color: rgb(var(--accent) / 0.14);
+  border-radius: 0.25rem;
+  padding: 0.1rem 0.2rem;
+}
+
+figcaption[data-rehype-pretty-code-title] {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: rgb(var(--muted));
+  padding: 0.5rem 0.75rem;
+  border: 1px solid rgb(var(--border));
+  border-bottom: none;
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  background-color: rgb(var(--card));
+}
+
+figcaption[data-rehype-pretty-code-title] + pre {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+/* Token colors: light by default, dark under .dark. */
+code[data-theme*=' '],
+code[data-theme*=' '] span {
+  color: var(--shiki-light);
+}
+
+.dark code[data-theme*=' '],
+.dark code[data-theme*=' '] span {
+  color: var(--shiki-dark);
+}

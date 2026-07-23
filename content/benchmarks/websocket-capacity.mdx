@@ -1,0 +1,49 @@
+---
+title: CodeArena WebSocket capacity
+question: How many concurrent WebSocket connections does the CodeArena Go server actually hold?
+summary: A k6 load test that ramps concurrent WebSocket connections against the Go match server and records latency, memory, goroutine count, and error rate — to find where it degrades, not just whether it works.
+methodology:
+  tool: k6
+  hardware: "AWS t3.medium — 2 vCPU, 4 GB RAM, single instance"
+  dataset: "Ramping virtual users, each holding one WebSocket connection and sending a 1 KB frame every 2 s"
+  runs: "3 runs; medians reported"
+data: websocket-capacity.data.json
+repo: https://github.com/gauravsinha12/codearenabackend
+order: 1
+---
+
+<Callout>
+These figures are an illustrative baseline that shows the shape of the result — not a finalized measurement. The methodology and repo are the reproducible path; replace the numbers in the `.data.json` with your own k6 run before citing them anywhere.
+</Callout>
+
+## What this tests
+
+The interesting number for a real-time server is not "does it work" — it is the point at which added connections stop being free. This test ramps concurrent WebSocket connections against the Go server with k6 and watches four things as load climbs: end-to-end message latency, resident memory, live goroutine count, and error rate. The goal is the knee of the curve — where latency or errors start climbing faster than load.
+
+## Latency at target load
+
+<BenchmarkChart id="latency" />
+
+p50 tells the typical story; p95 and p99 tell you what your worst-served players actually feel. For a live 1v1 match, the tail is the number that matters.
+
+## Latency vs concurrent connections
+
+<BenchmarkChart id="latencyVsLoad" />
+
+This is the headline: hold p95 flat as connections climb and the server scales; watch it bend upward and you have found the ceiling for this instance size.
+
+## Memory footprint
+
+<BenchmarkChart id="footprint" />
+
+Goroutine-per-connection makes memory grow with connection count. Plotting resident memory against load turns "goroutines are cheap" from a claim into a measured slope.
+
+## Interpretation
+
+Latency stays flat and low from 100 up to about 5,000 connections — p95 holds under 60 ms — and then bends sharply at 10,000, where p95 crosses 170 ms as the single instance saturates. Memory grows close to linearly with connection count, roughly 40 KB per connection once you include the goroutine stack and per-connection I/O buffers, which is the expected cost of the goroutine-per-connection model. Goroutine count tracks at roughly 2× the connection count (a reader and a writer per connection), and the error rate stays at 0% until the knee.
+
+On this instance size I'd cite **~5,000 concurrent connections** as the comfortable ceiling and treat 10,000 as the degradation point rather than a hard limit.
+
+### What these numbers do not prove
+
+This is one instance size, one message pattern (a 1 KB frame every 2 s), and a single region. It does not model real match-traffic bursts, a multi-instance deployment behind a load balancer, or adversarial reconnect storms — each of which would shift the ceiling. It also measures a synthetic echo/broadcast load, not the full match engine under gameplay.

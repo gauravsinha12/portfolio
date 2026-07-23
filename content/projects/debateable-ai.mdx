@@ -1,0 +1,64 @@
+---
+title: Debateable-AI
+summary: Zephyr-7B fine-tuned with QLoRA and instruction tuning on a custom debate dataset, then deployed as a 4-bit quantized model for GPU-efficient inference.
+lead: Zephyr-7B adapted with QLoRA in 4-bit — training low-rank adapters instead of full weights so the fine-tune fits in consumer-GPU VRAM.
+stack:
+  - Python
+  - PyTorch
+  - Transformers
+  - PEFT
+  - TRL
+links:
+  github: https://github.com/gauravsinha12/Debateable-AI-Chatbot
+order: 3
+---
+
+## The problem
+
+I wanted a 7B model that argues a position well — takes a stance, defends it, and rebuts. Full fine-tuning a 7B model is out of reach on a single consumer GPU: the optimizer states and gradients alone dwarf the card's memory. QLoRA makes it tractable by freezing a 4-bit-quantized base model and training only small low-rank adapters, so the trainable footprint is a fraction of the full weights.
+
+## Architecture
+
+<Mermaid chart={`
+flowchart LR
+  BASE["Zephyr-7B base weights"] --> Q4["4-bit quantize (NF4)"]
+  DS["Custom debate dataset"] --> FMT["Instruction formatting"]
+  Q4 --> TRAIN["Train LoRA adapters (PEFT + TRL)"]
+  FMT --> TRAIN
+  TRAIN --> ADAPT["LoRA adapters"]
+  Q4 --> INF["4-bit inference"]
+  ADAPT --> INF
+  INF --> OUT["Debate responses"]
+`} />
+
+The base weights are quantized to 4-bit and frozen. The debate dataset is formatted into instruction/response pairs. Training updates only the LoRA adapters via PEFT and TRL. At inference, the same 4-bit base runs with the trained adapters applied.
+
+## Engineering decisions
+
+### QLoRA over full fine-tuning
+
+Full fine-tuning of a 7B model holds full-precision weights, gradients, and optimizer state in memory at once — tens of gigabytes, more than a single consumer card has. QLoRA keeps the base weights frozen in 4-bit and trains only low-rank adapters, collapsing the trainable-parameter count and the optimizer footprint by orders of magnitude. The tradeoff is a modest quality ceiling versus a full fine-tune and some quantization noise.
+
+<Fill>Show the VRAM math on the exact GPU I used — full fine-tune memory vs the QLoRA footprint — so the "why" is a number, not an assertion.</Fill>
+
+### LoRA rank, alpha, and target modules
+
+Rank sets adapter capacity; alpha scales the adapter's contribution; the choice of which projection modules to adapt (attention only vs attention plus MLP) trades expressiveness against parameter count and compute.
+
+<Fill>Give the rank, the alpha, and which target modules I adapted (e.g. q/k/v/o projections, and whether I included the MLP), and the reasoning behind each.</Fill>
+
+### Dataset construction and instruction formatting
+
+Instruction tuning is only as good as the pairs it trains on: how debate prompts and responses were sourced, cleaned, and templated into the chat format the base model expects determines what the adapters actually learn.
+
+<Fill>Describe where the debate data came from, how I cleaned and balanced it, the number of examples, and the exact instruction/chat template I formatted it into.</Fill>
+
+### 4-bit quantization: quality cost vs memory saved
+
+Quantizing to 4-bit is what makes both training and inference fit, but it introduces representational error. The honest version of this decision reports both sides: the memory saved and the measured quality change, not just the win.
+
+<Fill>Report the measured quality cost of 4-bit (an eval score, perplexity, or a qualitative comparison) against the memory it saved — measured, not estimated.</Fill>
+
+## What I'd do differently
+
+<Fill>The retrospective: what I'd change about the data, the adapter configuration, or the evaluation, and what I'd measure to know it worked.</Fill>

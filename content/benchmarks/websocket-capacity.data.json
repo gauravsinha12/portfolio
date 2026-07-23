@@ -1,0 +1,46 @@
+{
+  "_comment": "Illustrative baseline values that show the shape of the result. Replace with your own measured k6 run before citing. Connection-count rungs match the loads described in the methodology.",
+  "charts": {
+    "latency": {
+      "title": "End-to-end latency by percentile at ~5,000 connections",
+      "type": "bar",
+      "unit": "ms",
+      "xKey": "percentile",
+      "series": [{ "key": "ms", "label": "Latency" }],
+      "data": [
+        { "percentile": "p50", "ms": 21 },
+        { "percentile": "p95", "ms": 58 },
+        { "percentile": "p99", "ms": 104 }
+      ],
+      "note": "Message round-trip latency measured with k6 at the target concurrent-connection count."
+    },
+    "latencyVsLoad": {
+      "title": "p95 latency vs concurrent connections",
+      "type": "line",
+      "unit": "ms",
+      "xKey": "connections",
+      "series": [{ "key": "p95", "label": "p95 latency" }],
+      "data": [
+        { "connections": "100", "p95": 9 },
+        { "connections": "500", "p95": 14 },
+        { "connections": "1000", "p95": 21 },
+        { "connections": "5000", "p95": 58 },
+        { "connections": "10000", "p95": 176 }
+      ],
+      "note": "Latency stays flat to ~5,000 connections, then bends upward as the single instance saturates."
+    },
+    "footprint": {
+      "title": "Server resident memory vs concurrent connections",
+      "type": "bar",
+      "unit": "MB",
+      "xKey": "connections",
+      "series": [{ "key": "memMB", "label": "RSS memory" }],
+      "data": [
+        { "connections": "100", "memMB": 31 },
+        { "connections": "1000", "memMB": 96 },
+        { "connections": "10000", "memMB": 438 }
+      ],
+      "note": "Memory grows close to linearly — roughly 40 KB per connection including goroutine stack and I/O buffers."
+    }
+  }
+}
